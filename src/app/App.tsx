@@ -1,27 +1,19 @@
 import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router";
 
-/**
- * 【重要】もしFigmaから書き出したコードの中に 
- * 「export const routes = [...]」という部分があれば、
- * その [...] の中身をコピーして、下の routes 変数の [] の中に貼り付けてください。
- */
-const routes = [
+// 設定をすべてこのファイル内にまとめ、外部の routes.tsx を探さないようにします
+const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <div style={{ padding: "40px", textAlign: "center", fontFamily: "sans-serif" }}>
         <h1 style={{ color: "#333" }}>ケイリノート</h1>
-        <p>プログラムの読み込みには成功しています！</p>
-        <p style={{ fontSize: "0.9em", color: "#666" }}>
-          ※もし画面が真っ白な場合は、Figmaのコードをこのファイルに直接貼り付ける必要があります。
-        </p>
+        <p>プログラムの読み込みに成功しました！</p>
+        <p style={{ color: "green", fontWeight: "bold" }}>これが表示されていれば、土台は完成です。</p>
       </div>
     ),
-  },
-];
-
-const router = createBrowserRouter(routes, {
+  }
+], {
   basename: "/keiri-note",
 });
 
