@@ -8,6 +8,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./src/アプリ/App.tsx"></script>
+   <script type="module" src="./src/app/App.tsx"></script>
   </body>
 </html>
