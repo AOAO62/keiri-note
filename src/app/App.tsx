@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router";
 // 隣にある routes.tsx からページの設定を読み込みます
 import { routes } from "./routes.tsx";
 
