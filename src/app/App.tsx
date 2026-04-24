@@ -1,8 +1,9 @@
 import React from "react";
-import { RouterProvider, createBrowserRouter } from "react-router";
+import ReactDOM from "react-dom/client"; // ← これが必要です
+import { RouterProvider, createHashRouter } from "react-router-dom";
 
-// 設定をすべてこのファイル内にまとめ、外部の routes.tsx を探さないようにします
-const router = createBrowserRouter([
+// ルーターの設定（createHashRouterに変更）
+const router = createHashRouter([
   {
     path: "/",
     element: (
@@ -13,10 +14,14 @@ const router = createBrowserRouter([
       </div>
     ),
   }
-], {
-  basename: "/keiri-note",
-});
+]);
 
-export default function App() {
-  return <RouterProvider router={router} />;
+// 実際に画面に描き出すための「実行スイッチ」
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
+  );
 }
