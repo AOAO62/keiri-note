@@ -1,8 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom/client"; // ← これが必要です
-import { RouterProvider, createHashRouter } from "react-router-dom";
+import ReactDOM from "react-dom/client";
+// 「react-router-dom」ではなく「react-router」にします
+import { RouterProvider, createHashRouter } from "react-router"; 
 
-// ルーターの設定（createHashRouterに変更）
 const router = createHashRouter([
   {
     path: "/",
@@ -16,7 +16,6 @@ const router = createHashRouter([
   }
 ]);
 
-// 実際に画面に描き出すための「実行スイッチ」
 const rootElement = document.getElementById("root");
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
