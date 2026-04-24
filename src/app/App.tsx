@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createHashRouter, useNavigate } from "react-router";
+import { RouterProvider, createHashRouter, useNavigate, useParams } from "react-router";
 
 // --- デザイン設定 ---
 const theme = {
@@ -25,7 +25,7 @@ const Header = () => (
 const StepBar = ({ current }: { current: number }) => (
   <div style={{ display: "flex", justifyContent: "space-between", padding: "20px", maxWidth: "400px", margin: "0 auto", position: "relative" }}>
     <div style={{ position: "absolute", top: "35px", left: "40px", right: "40px", height: "2px", backgroundColor: "#eee", zIndex: 1 }} />
-    <div style={{ position: "absolute", top: "35px", left: "40px", width: `${(current - 1) * 25}%`, height: "2px", backgroundColor: theme.mint, zIndex: 1, transition: "0.3s" }} />
+    <div style={{ position: "absolute", top: "35px", left: "40px", width: `${((current - 1) / 4) * 100}%`, height: "2px", backgroundColor: theme.mint, zIndex: 1, transition: "0.3s" }} />
     {[1, 2, 3, 4, 5].map((s) => (
       <div key={s} style={{
         width: "30px", height: "30px", borderRadius: "50%", border: `2px solid ${current >= s ? theme.mint : "#ccc"}`,
@@ -36,7 +36,7 @@ const StepBar = ({ current }: { current: number }) => (
   </div>
 );
 
-// --- 各ステップのコンテンツ定義 ---
+// --- ステップデータ ---
 const STEPS = [
   { title: "準備をしよう", tasks: ["事業用の銀行口座を1つ決める", "クレジットカードを1枚決める"], advice: "口座とカードを分けるだけで、毎月の作業がグッと楽になりますよ！" },
   { title: "整理をしよう", tasks: ["財布の中のレシートを分ける", "封筒やファイルに入れる", "領収書をダウンロードする"], advice: "レシートは綺麗に貼らなくても大丈夫。月ごとにまとめておくだけでOKです！" },
@@ -45,7 +45,7 @@ const STEPS = [
   { title: "完了！", tasks: ["残高が合っているか確認する", "レシートを保管ボックスへ"], advice: "数字のズレがなければ今月は完了！自分にご褒美をあげましょう🍰" },
 ];
 
-// --- ページ1: トップページ ---
+// --- ページ: トップ ---
 const TopPage = () => {
   const navigate = useNavigate();
   return (
@@ -62,9 +62,11 @@ const TopPage = () => {
   );
 };
 
-// --- ページ2: ステップ詳細 ---
-const StepPage = ({ num }: { num: number }) => {
+// --- ページ: 各ステップ ---
+const StepPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const num = parseInt(id || "1");
   const content = STEPS[num - 1];
 
   return (
@@ -73,7 +75,7 @@ const StepPage = ({ num }: { num: number }) => {
       <StepBar current={num} />
       <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ backgroundColor: "white", borderRadius: "20px", padding: "25px", boxShadow: "0 5px 15px rgba(0,0,0,0.05)" }}>
-          <h3 style={{ marginBottom: "20px" }}>{content.title}</h3>
+          <h3 style={{ marginBottom: "20px" }}>Step {num}: {content.title}</h3>
           {content.tasks.map((task, i) => (
             <label key={i} style={{ display: "flex", gap: "10px", padding: "15px", border: "1px solid #eee", borderRadius: "12px", marginBottom: "10px" }}>
               <input type="checkbox" /> <span style={{ fontSize: "14px" }}>{task}</span>
@@ -85,7 +87,7 @@ const StepPage = ({ num }: { num: number }) => {
           </div>
           <button 
             onClick={() => num < 5 ? navigate(`/step/${num + 1}`) : navigate("/")}
-            style={{ width: "100%", marginTop: "30px", padding: "15px", backgroundColor: "#333", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold" }}
+            style={{ width: "100%", marginTop: "30px", padding: "15px", backgroundColor: "#333", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}
           >
             {num < 5 ? "次のStepへ進む" : "完了してトップへ"}
           </button>
@@ -95,14 +97,10 @@ const StepPage = ({ num }: { num: number }) => {
   );
 };
 
-// --- ルーター設定 (GitHub Pages用に HashRouter を使用) ---
+// --- ルーター設定 ---
 const router = createHashRouter([
   { path: "/", element: <TopPage /> },
-  { path: "/step/1", element: <StepPage num={1} /> },
-  { path: "/step/2", element: <StepPage num={2} /> },
-  { path: "/step/3", element: <StepPage num={3} /> },
-  { path: "/step/4", element: <StepPage num={4} /> },
-  { path: "/step/5", element: <StepPage num={5} /> },
+  { path: "/step/:id", element: <StepPage /> },
 ]);
 
 const rootElement = document.getElementById("root");
