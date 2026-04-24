@@ -7,7 +7,6 @@ const theme = {
   mint: "#009688",
   lightMint: "#e0f2f1",
   text: "#333",
-  gray: "#f5f5f5",
   white: "#ffffff",
 };
 
@@ -37,7 +36,16 @@ const StepBar = ({ current }: { current: number }) => (
   </div>
 );
 
-// --- ページ1: トップページ (画像 c044a3 / c03d78) ---
+// --- 各ステップのコンテンツ定義 ---
+const STEPS = [
+  { title: "準備をしよう", tasks: ["事業用の銀行口座を1つ決める", "クレジットカードを1枚決める"], advice: "口座とカードを分けるだけで、毎月の作業がグッと楽になりますよ！" },
+  { title: "整理をしよう", tasks: ["財布の中のレシートを分ける", "封筒やファイルに入れる", "領収書をダウンロードする"], advice: "レシートは綺麗に貼らなくても大丈夫。月ごとにまとめておくだけでOKです！" },
+  { title: "チェックしよう", tasks: ["経費になるものを確認", "「何代」なのか大まかに分類する"], advice: "「これって経費？」と迷ったら、Q&Aページで検索してみましょう！" },
+  { title: "入力をしよう", tasks: ["会計ソフトを開く", "売上を入力する", "経費を入力する"], advice: "毎日やらなくて大丈夫！月1回、コーヒーを片手に一気にやっちゃいましょう。" },
+  { title: "完了！", tasks: ["残高が合っているか確認する", "レシートを保管ボックスへ"], advice: "数字のズレがなければ今月は完了！自分にご褒美をあげましょう🍰" },
+];
+
+// --- ページ1: トップページ ---
 const TopPage = () => {
   const navigate = useNavigate();
   return (
@@ -47,79 +55,39 @@ const TopPage = () => {
         <div style={{ width: "100%", borderRadius: "20px", overflow: "hidden", marginBottom: "20px", boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}>
           <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500" alt="main" style={{ width: "100%", display: "block" }} />
         </div>
-        <div style={{ backgroundColor: theme.lightMint, color: theme.mint, display: "inline-block", padding: "4px 12px", borderRadius: "15px", fontSize: "12px", marginBottom: "15px" }}>● 経理は難しくない 🐻‍❄️</div>
         <h1 style={{ fontSize: "26px", marginBottom: "20px" }}>毎月30分、<br />自分とビジネスを整える時間に。</h1>
         <button onClick={() => navigate("/step/1")} style={{ width: "100%", padding: "18px", backgroundColor: theme.mint, color: "white", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "bold", cursor: "pointer" }}>さっそくStep 1から始める →</button>
-        
-        {/* メニュータイル (画像 c03d78 の再現) */}
-        <div style={{ marginTop: "30px", display: "grid", gap: "15px" }}>
-          {[
-            { icon: "👛", title: "まずは何を準備すればいい？", desc: "専用口座とカードから始めよう" },
-            { icon: "❓", title: "これって経費になる？", desc: "よくある支出のOK/NGを判定" },
-          ].map((item, i) => (
-            <div key={i} style={{ padding: "20px", border: "1px solid #eee", borderRadius: "15px", display: "flex", gap: "15px", alignItems: "center" }}>
-              <span style={{ fontSize: "24px" }}>{item.icon}</span>
-              <div>
-                <div style={{ fontWeight: "bold", fontSize: "14px" }}>{item.title}</div>
-                <div style={{ fontSize: "12px", color: "#888" }}>{item.desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
       </main>
     </div>
   );
 };
 
-// --- ページ2: ステップ詳細 (画像 c03d3a / c03cdf / c039fb) ---
-const StepPage = ({ stepNum }: { stepNum: number }) => {
+// --- ページ2: ステップ詳細 ---
+const StepPage = ({ num }: { num: number }) => {
   const navigate = useNavigate();
-  const stepContent = [
-    {
-      title: "準備をしよう",
-      tasks: ["事業用の銀行口座を1つ決める", "クレジットカードを1枚決める"],
-      advice: "口座とカードを分けるだけで、毎月の作業がグッと楽になりますよ！"
-    },
-    {
-      title: "整理をしよう",
-      tasks: ["財布の中のレシートを分ける", "封筒やファイルに入れる", "領収書をダウンロードする"],
-      advice: "レシートは綺麗に貼らなくても大丈夫。月ごとにまとめておくだけでOKです！"
-    },
-    {
-      title: "チェックしよう",
-      tasks: ["経費になるもの・ならないものを確認", "「何代」なのか大まかに分類する"],
-      advice: "「これって経費？」と迷ったら、Q&Aページで検索してみましょう！"
-    }
-  ][stepNum - 1];
+  const content = STEPS[num - 1];
 
   return (
     <div style={{ backgroundColor: theme.lightMint, minHeight: "100vh" }}>
       <Header />
-      <StepBar current={stepNum} />
+      <StepBar current={num} />
       <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ backgroundColor: "white", borderRadius: "20px", padding: "25px", boxShadow: "0 5px 15px rgba(0,0,0,0.05)" }}>
-          <h3 style={{ borderLeft: `4px solid ${theme.mint}`, paddingLeft: "10px", marginBottom: "20px" }}>やることリスト</h3>
-          {stepContent.tasks.map((task, i) => (
-            <label key={i} style={{ display: "flex", gap: "10px", padding: "15px", border: "1px solid #eee", borderRadius: "12px", marginBottom: "10px", cursor: "pointer" }}>
+          <h3 style={{ marginBottom: "20px" }}>{content.title}</h3>
+          {content.tasks.map((task, i) => (
+            <label key={i} style={{ display: "flex", gap: "10px", padding: "15px", border: "1px solid #eee", borderRadius: "12px", marginBottom: "10px" }}>
               <input type="checkbox" /> <span style={{ fontSize: "14px" }}>{task}</span>
             </label>
           ))}
-          
-          <div style={{ display: "flex", gap: "10px", marginTop: "30px", alignItems: "flex-start" }}>
-            <div style={{ textAlign: "center" }}>
-              <span style={{ fontSize: "30px" }}>🐻‍❄️</span>
-              <div style={{ fontSize: "10px", color: "white", backgroundColor: theme.mint, padding: "2px 4px", borderRadius: "4px" }}>先生</div>
-            </div>
-            <div style={{ flex: 1, backgroundColor: "#e0f2f1", padding: "15px", borderRadius: "0 15px 15px 15px", fontSize: "13px", lineHeight: "1.6", position: "relative" }}>
-              {stepContent.advice}
-            </div>
+          <div style={{ display: "flex", gap: "10px", marginTop: "30px", backgroundColor: "#f0fdfa", padding: "15px", borderRadius: "12px" }}>
+             <span style={{ fontSize: "24px" }}>🐻‍❄️</span>
+             <p style={{ fontSize: "13px", margin: 0 }}>{content.advice}</p>
           </div>
-
           <button 
-            onClick={() => stepNum < 3 ? navigate(`/step/${stepNum + 1}`) : navigate("/")}
-            style={{ width: "100%", marginTop: "30px", padding: "15px", backgroundColor: "#333", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}
+            onClick={() => num < 5 ? navigate(`/step/${num + 1}`) : navigate("/")}
+            style={{ width: "100%", marginTop: "30px", padding: "15px", backgroundColor: "#333", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold" }}
           >
-            {stepNum < 3 ? "次のStepへ進む" : "トップに戻る"}
+            {num < 5 ? "次のStepへ進む" : "完了してトップへ"}
           </button>
         </div>
       </main>
@@ -127,12 +95,14 @@ const StepPage = ({ stepNum }: { stepNum: number }) => {
   );
 };
 
-// --- ルーター ---
+// --- ルーター設定 (GitHub Pages用に HashRouter を使用) ---
 const router = createHashRouter([
   { path: "/", element: <TopPage /> },
-  { path: "/step/1", element: <StepPage stepNum={1} /> },
-  { path: "/step/2", element: <StepPage stepNum={2} /> },
-  { path: "/step/3", element: <StepPage stepNum={3} /> },
+  { path: "/step/1", element: <StepPage num={1} /> },
+  { path: "/step/2", element: <StepPage num={2} /> },
+  { path: "/step/3", element: <StepPage num={3} /> },
+  { path: "/step/4", element: <StepPage num={4} /> },
+  { path: "/step/5", element: <StepPage num={5} /> },
 ]);
 
 const rootElement = document.getElementById("root");
