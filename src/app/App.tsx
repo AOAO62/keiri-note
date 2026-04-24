@@ -42,16 +42,17 @@ const TopPage = () => {
   const [progress, setProgress] = useState(getSavedProgress());
   const [luckyMsg, setLuckyMsg] = useState("");
 
-  // 格言リスト（空いていた合同記号のスペース用）
+  // 格言リスト（画像32の空スペース用）
   const messages = [
     "経理を制する者は、ビジネスを制する！",
     "完璧じゃなくていい、『だいたい』で一歩前へ。",
-    "レシートの山は、頑張った証拠ですよ。",
+    "レシートの山は、あなたが頑張った証拠ですよ。",
     "数字は嘘をつかない。あなたの努力も裏切らない。",
     "コーヒーを淹れて、自分を褒めながら始めましょう。",
   ];
 
   useEffect(() => {
+    // ページ読み込み時にランダムでメッセージを選択
     setLuckyMsg(messages[Math.floor(Math.random() * messages.length)]);
   }, []);
 
@@ -73,10 +74,10 @@ const TopPage = () => {
       <Header />
       <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
         
-        {/* 合同記号の代わりの新機能：シロクマ格言 */}
-        <div style={{ textAlign: "center", padding: "10px", border: `1px dashed ${theme.mint}`, borderRadius: "10px", marginBottom: "20px", backgroundColor: "#f9fefd" }}>
-          <span style={{ fontSize: "12px", color: theme.mint, display: "block", marginBottom: "5px" }}>シロクマの今日の一言</span>
-          <strong style={{ fontSize: "14px" }}>「{luckyMsg}」</strong>
+        {/* 画像32：シロクマ格言（一言占い） */}
+        <div style={{ textAlign: "center", padding: "15px", border: `2px solid ${theme.lightMint}`, borderRadius: "15px", marginBottom: "20px", backgroundColor: "#fdfdfd" }}>
+          <span style={{ fontSize: "11px", color: theme.mint, fontWeight: "bold", display: "block", marginBottom: "4px" }}>SHIROKUMA COLUMN</span>
+          <strong style={{ fontSize: "15px", color: theme.text }}>「{luckyMsg}」</strong>
         </div>
 
         <div style={{ textAlign: "center", marginBottom: "15px" }}>
@@ -85,19 +86,19 @@ const TopPage = () => {
           </span>
         </div>
 
-        <div style={{ width: "100%", height: "200px", borderRadius: "20px", overflow: "hidden", marginBottom: "20px", boxShadow: "0 10px 20px rgba(0,0,0,0.05)", backgroundColor: "#f0f0f0" }}>
-          {/* 画像切れ対策：Placeholdサービスを使用 */}
-          <img src="https://placehold.jp/24/009688/ffffff/500x250.png?text=Coffee%20Time%20with%20Keiri" alt="main" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {/* メイン画像（リンク切れ対策版） */}
+        <div style={{ width: "100%", borderRadius: "20px", overflow: "hidden", marginBottom: "20px", boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}>
+          <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80" alt="coffee" style={{ width: "100%", height: "200px", objectFit: "cover", display: "block" }} />
         </div>
 
         {/* コーヒーカウンター */}
-        <div style={{ backgroundColor: theme.lightMint, padding: "20px", borderRadius: "16px", marginBottom: "30px", textAlign: "center", border: `2px solid ${theme.mint}` }}>
+        <div style={{ backgroundColor: theme.lightMint, padding: "20px", borderRadius: "16px", marginBottom: "30px", textAlign: "center", border: `1px solid ${theme.mint}` }}>
           <div style={{ fontSize: "14px", fontWeight: "bold", marginBottom: "5px" }}>今月のクリア報酬 ☕️</div>
-          <div style={{ fontSize: "20px", fontWeight: "bold", color: theme.mint }}>
-            {completedStepsCount === 5 ? "全ステップ完了！ご褒美タイム☕️" : `ご褒美まで あと ${5 - completedStepsCount} Step`}
+          <div style={{ fontSize: "22px", fontWeight: "bold", color: theme.mint }}>
+            {completedStepsCount === 5 ? "全ステップ完了！お疲れ様☕️" : `ご褒美まで あと ${5 - completedStepsCount} Step`}
           </div>
-          <div style={{ width: "100%", backgroundColor: "#fff", height: "10px", borderRadius: "5px", marginTop: "10px", overflow: "hidden" }}>
-            <div style={{ width: `${(completedTasksCount / totalTasks) * 100}%`, backgroundColor: theme.mint, height: "100%", transition: "width 0.3s ease" }}></div>
+          <div style={{ width: "100%", backgroundColor: "#fff", height: "10px", borderRadius: "5px", marginTop: "12px", overflow: "hidden" }}>
+            <div style={{ width: `${(completedTasksCount / totalTasks) * 100}%`, backgroundColor: theme.mint, height: "100%", transition: "width 0.5s ease-out" }}></div>
           </div>
         </div>
 
@@ -106,7 +107,8 @@ const TopPage = () => {
           <Link to="/step/1" style={mainButtonStyle("#333")}>Step 1 からはじめる →</Link>
         </div>
 
-        <section>
+        {/* Step別アドバイス一覧 */}
+        <section style={{ marginBottom: "40px" }}>
           <h3 style={{ fontSize: "18px", marginBottom: "15px", borderLeft: `4px solid ${theme.mint}`, paddingLeft: "10px" }}>Step別アドバイス</h3>
           <div style={{ display: "grid", gap: "12px" }}>
             {STEPS.map((s) => {
@@ -119,7 +121,7 @@ const TopPage = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: "bold", fontSize: "14px" }}>{s.title}</div>
-                      <p style={{ fontSize: "12px", color: "#666", margin: 0 }}>{s.advice}</p>
+                      <p style={{ fontSize: "12px", color: "#666", margin: 0, lineHeight: "1.4" }}>{s.advice}</p>
                     </div>
                   </div>
                 </Link>
@@ -127,8 +129,8 @@ const TopPage = () => {
             })}
           </div>
         </section>
-        
-        <Link to="/qa" style={{ display: "block", textAlign: "center", color: "#888", fontSize: "14px", textDecoration: "none", padding: "15px", marginTop: "30px" }}>
+
+        <Link to="/qa" style={{ display: "block", textAlign: "center", color: "#888", fontSize: "14px", textDecoration: "none", padding: "15px", border: `1px solid ${theme.border}`, borderRadius: "12px" }}>
           🤔 よくある質問（Q&A）はこちら
         </Link>
       </main>
@@ -136,7 +138,7 @@ const TopPage = () => {
   );
 };
 
-// --- ページ2: ステップ詳細 ---
+// --- ページ2: ステップ詳細（チェック連動ロジック） ---
 const StepPage = () => {
   const { id } = useParams();
   const num = parseInt(id || "1");
@@ -157,27 +159,24 @@ const StepPage = () => {
       <Header />
       <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ backgroundColor: "white", borderRadius: "20px", padding: "25px", boxShadow: "0 5px 15px rgba(0,0,0,0.05)" }}>
-          <h2 style={{ marginBottom: "20px" }}>Step {num}: {content.title}</h2>
+          <div style={{ color: theme.mint, fontWeight: "bold", marginBottom: "5px" }}>Step {num} / 5</div>
+          <h2 style={{ marginBottom: "20px", fontSize: "20px" }}>{content.title}</h2>
           {content.tasks.map((t, i) => (
-            <label key={i} style={{ display: "flex", gap: "10px", padding: "12px", border: `1px solid ${theme.border}`, borderRadius: "10px", marginBottom: "10px", cursor: "pointer", alignItems: "center" }}>
+            <label key={i} style={{ display: "flex", gap: "12px", padding: "15px", border: `1px solid ${theme.border}`, borderRadius: "12px", marginBottom: "10px", cursor: "pointer", alignItems: "center" }}>
               <input 
                 type="checkbox" 
                 checked={!!progress[`${num}-${t}`]} 
                 onChange={() => handleCheck(t)} 
-                style={{ width: "20px", height: "20px" }}
+                style={{ width: "18px", height: "18px" }}
               /> 
-              <span style={{ textDecoration: progress[`${num}-${t}`] ? "line-through" : "none", color: progress[`${num}-${t}`] ? "#ccc" : "inherit" }}>{t}</span>
+              <span style={{ fontSize: "14px", textDecoration: progress[`${num}-${t}`] ? "line-through" : "none", color: progress[`${num}-${t}`] ? "#ccc" : "inherit" }}>{t}</span>
             </label>
           ))}
           <div style={{ display: "flex", gap: "10px", marginTop: "30px", backgroundColor: "#f0fdfa", padding: "15px", borderRadius: "12px" }}>
              <span style={{ fontSize: "24px" }}>🐻‍❄️</span><p style={{ fontSize: "13px", margin: 0, lineHeight: "1.5" }}>{content.advice}</p>
           </div>
           <div style={{ marginTop: "30px" }}>
-            {num < 5 ? (
-              <Link to={`/step/${num + 1}`} style={mainButtonStyle("#333")}>次のStepへ</Link>
-            ) : (
-              <Link to="/" style={mainButtonStyle(theme.mint)}>完了！トップで確認</Link>
-            )}
+            {num < 5 ? <Link to={`/step/${num + 1}`} style={mainButtonStyle("#333")}>次のStepへ進む</Link> : <Link to="/" style={mainButtonStyle(theme.mint)}>完了！トップへ戻る</Link>}
           </div>
         </div>
       </main>
@@ -185,41 +184,37 @@ const StepPage = () => {
   );
 };
 
-// --- 診断・Q&Aページなど（以前のコードを維持） ---
+// --- 他の機能（診断・Q&A） ---
 const mainButtonStyle = (bg: string) => ({
   display: "block", textAlign: "center" as const, textDecoration: "none", padding: "20px", 
-  backgroundColor: bg, color: "white", borderRadius: "15px", fontWeight: "bold" as const
+  backgroundColor: bg, color: "white", borderRadius: "15px", fontWeight: "bold" as const,
+  boxShadow: "0 4px 0 rgba(0,0,0,0.1)"
 });
 
-const Diagnosis = () => {
-  return (
-    <div style={{ padding: "50px", textAlign: "center" }}>
-      <h2>経費診断 🐻‍❄️</h2>
-      <p>（診断ロジック稼働中）</p>
-      <Link to="/" style={{ color: theme.mint }}>トップに戻る</Link>
-    </div>
-  );
-};
-
+// Q&Aコンポーネント
 const QAPage = () => {
+  const qas = [
+    { q: "領収書をなくした時は？", a: "再発行できない場合は「出金伝票」を書きましょう。" },
+    { q: "家賃の按分はどうする？", a: "仕事で使っているスペースの面積などで計算します。" }
+  ];
   return (
-    <div style={{ padding: "50px", textAlign: "center" }}>
-      <h2>よくある質問 🤔</h2>
-      <p>（回答データ稼働中）</p>
-      <Link to="/" style={{ color: theme.mint }}>トップに戻る</Link>
+    <div style={{ backgroundColor: theme.lightMint, minHeight: "100vh" }}>
+      <Header />
+      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>よくある質問</h2>
+        {qas.map((item, i) => (
+          <details key={i} style={{ backgroundColor: "white", borderRadius: "12px", marginBottom: "10px", padding: "15px" }}>
+            <summary style={{ fontWeight: "bold", cursor: "pointer" }}>Q. {item.q}</summary>
+            <p style={{ marginTop: "10px", fontSize: "14px", color: "#555" }}>🐻‍❄️ {item.a}</p>
+          </details>
+        ))}
+        <Link to="/" style={{ display: "block", textAlign: "center", marginTop: "30px", color: theme.mint }}>戻る</Link>
+      </main>
     </div>
   );
 };
 
-// --- ルーター設定 ---
-const router = createHashRouter([
-  { path: "/", element: <TopPage /> },
-  { path: "/step/:id", element: <StepPage /> },
-  { path: "/diagnosis", element: <Diagnosis /> },
-  { path: "/qa", element: <QAPage /> },
-  { path: "*", element: <Navigate to="/" /> },
-]);
-
-const rootElement = document.getElementById("root");
-if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
+// 診断コンポーネント（簡易版）
+const Diagnosis = () => (
+  <div style={{ padding: "50px", textAlign: "center" }}>
+    <h2>これ
