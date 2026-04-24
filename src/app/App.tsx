@@ -2,133 +2,137 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createHashRouter, useNavigate } from "react-router";
 
-// --- デザイン設定（画像13・14の仕様より） ---
+// --- デザイン設定 ---
 const theme = {
-  mint: "#009688",      // メインのミントグリーン
-  lightMint: "#e0f2f1", // 背景用の薄い緑
+  mint: "#009688",
+  lightMint: "#e0f2f1",
   text: "#333",
+  gray: "#f5f5f5",
   white: "#ffffff",
 };
 
-// --- アニメーション用スタイル ---
-const slideInStyle = {
-  animation: "slideIn 0.4s ease-out",
-};
+// --- 共通コンポーネント: ヘッダー ---
+const Header = () => (
+  <header style={{ padding: "15px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "#fff", borderBottom: "1px solid #eee" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <span style={{ fontSize: "24px" }}>🐻‍❄️</span>
+      <strong style={{ fontSize: "18px" }}>経理のノート</strong>
+    </div>
+    <div style={{ fontSize: "20px" }}>☰</div>
+  </header>
+);
 
-const globalStyles = `
-  @keyframes slideIn {
-    from { transform: translateX(50px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-  body { margin: 0; font-family: 'Hiragino Kaku Gothic ProN', sans-serif; color: #333; }
-`;
+// --- 共通コンポーネント: ステップバー ---
+const StepBar = ({ current }: { current: number }) => (
+  <div style={{ display: "flex", justifyContent: "space-between", padding: "20px", maxWidth: "400px", margin: "0 auto", position: "relative" }}>
+    <div style={{ position: "absolute", top: "35px", left: "40px", right: "40px", height: "2px", backgroundColor: "#eee", zIndex: 1 }} />
+    <div style={{ position: "absolute", top: "35px", left: "40px", width: `${(current - 1) * 25}%`, height: "2px", backgroundColor: theme.mint, zIndex: 1, transition: "0.3s" }} />
+    {[1, 2, 3, 4, 5].map((s) => (
+      <div key={s} style={{
+        width: "30px", height: "30px", borderRadius: "50%", border: `2px solid ${current >= s ? theme.mint : "#ccc"}`,
+        backgroundColor: "white", color: current >= s ? theme.mint : "#ccc", display: "flex",
+        alignItems: "center", justifyContent: "center", zIndex: 2, fontSize: "12px", fontWeight: "bold"
+      }}>{s}</div>
+    ))}
+  </div>
+);
 
-// --- コンポーネント: トップページ (画像15の再現) ---
+// --- ページ1: トップページ (画像 c044a3 / c03d78) ---
 const TopPage = () => {
   const navigate = useNavigate();
   return (
     <div style={{ backgroundColor: theme.white, minHeight: "100vh" }}>
-      <header style={{ padding: "15px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #eee" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "24px" }}>🐻‍❄️</span>
-          <strong style={{ fontSize: "18px" }}>経理のノート</strong>
+      <Header />
+      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
+        <div style={{ width: "100%", borderRadius: "20px", overflow: "hidden", marginBottom: "20px", boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}>
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500" alt="main" style={{ width: "100%", display: "block" }} />
         </div>
-        <div style={{ fontSize: "20px" }}>☰</div>
-      </header>
-
-      <main style={{ padding: "40px 20px", textAlign: "left", maxWidth: "500px", margin: "0 auto" }}>
-        {/* メインビジュアル（コーヒーのイメージ） */}
-        <div style={{ width: "100%", height: "250px", backgroundColor: "#f9f9f9", borderRadius: "20px", marginBottom: "30px", display: "flex", justifyContent: "center", alignItems: "center", boxShadow: "0 10px 30px rgba(0,0,0,0.05)" }}>
-          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=500" alt="Coffee" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "20px" }} />
+        <div style={{ backgroundColor: theme.lightMint, color: theme.mint, display: "inline-block", padding: "4px 12px", borderRadius: "15px", fontSize: "12px", marginBottom: "15px" }}>● 経理は難しくない 🐻‍❄️</div>
+        <h1 style={{ fontSize: "26px", marginBottom: "20px" }}>毎月30分、<br />自分とビジネスを整える時間に。</h1>
+        <button onClick={() => navigate("/step/1")} style={{ width: "100%", padding: "18px", backgroundColor: theme.mint, color: "white", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "bold", cursor: "pointer" }}>さっそくStep 1から始める →</button>
+        
+        {/* メニュータイル (画像 c03d78 の再現) */}
+        <div style={{ marginTop: "30px", display: "grid", gap: "15px" }}>
+          {[
+            { icon: "👛", title: "まずは何を準備すればいい？", desc: "専用口座とカードから始めよう" },
+            { icon: "❓", title: "これって経費になる？", desc: "よくある支出のOK/NGを判定" },
+          ].map((item, i) => (
+            <div key={i} style={{ padding: "20px", border: "1px solid #eee", borderRadius: "15px", display: "flex", gap: "15px", alignItems: "center" }}>
+              <span style={{ fontSize: "24px" }}>{item.icon}</span>
+              <div>
+                <div style={{ fontWeight: "bold", fontSize: "14px" }}>{item.title}</div>
+                <div style={{ fontSize: "12px", color: "#888" }}>{item.desc}</div>
+              </div>
+            </div>
+          ))}
         </div>
-
-        <div style={{ display: "inline-block", backgroundColor: theme.lightMint, color: theme.mint, padding: "4px 12px", borderRadius: "15px", fontSize: "12px", marginBottom: "20px" }}>
-          ● 経理は難しくない 🐻‍❄️
-        </div>
-
-        <h1 style={{ fontSize: "28px", lineHeight: "1.4", marginBottom: "20px" }}>
-          毎月30分、<br />
-          自分とビジネスを整える<br />
-          時間に。
-        </h1>
-
-        <p style={{ color: "#666", fontSize: "14px", lineHeight: "1.8", marginBottom: "40px" }}>
-          期限ギリギリで焦らないために、まずは月1回、コーヒーを飲みながら数字をチェックする習慣をつけましょう！
-        </p>
-
-        <button 
-          onClick={() => navigate("/diagnosis")}
-          style={{ width: "100%", padding: "18px", backgroundColor: theme.mint, color: "white", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "bold", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
-        >
-          さっそくStep 1から始める <span>→</span>
-        </button>
       </main>
-      <style>{globalStyles}</style>
     </div>
   );
 };
 
-// --- コンポーネント: 診断ページ (画像13・14の仕様) ---
-const DiagnosisPage = () => {
-  const [step, setStep] = useState(0);
+// --- ページ2: ステップ詳細 (画像 c03d3a / c03cdf / c039fb) ---
+const StepPage = ({ stepNum }: { stepNum: number }) => {
   const navigate = useNavigate();
-
-  const questions = [
-    { q: "その支払いは、仕事に関係ありますか？", yes: 1, no: "private" },
-    { q: "1人でしたか？ 誰かと一緒でしたか？", yes: 2, no: "reception", yesLabel: "1人で", noLabel: "誰かと" },
-    { q: "モノを買いましたか？ サービスを受けましたか？", yes: "consumable", no: "service", yesLabel: "モノ", noLabel: "サービス" },
-  ];
-
-  const handleAnswer = (nextStep: any) => {
-    setStep(nextStep);
-  };
+  const stepContent = [
+    {
+      title: "準備をしよう",
+      tasks: ["事業用の銀行口座を1つ決める", "クレジットカードを1枚決める"],
+      advice: "口座とカードを分けるだけで、毎月の作業がグッと楽になりますよ！"
+    },
+    {
+      title: "整理をしよう",
+      tasks: ["財布の中のレシートを分ける", "封筒やファイルに入れる", "領収書をダウンロードする"],
+      advice: "レシートは綺麗に貼らなくても大丈夫。月ごとにまとめておくだけでOKです！"
+    },
+    {
+      title: "チェックしよう",
+      tasks: ["経費になるもの・ならないものを確認", "「何代」なのか大まかに分類する"],
+      advice: "「これって経費？」と迷ったら、Q&Aページで検索してみましょう！"
+    }
+  ][stepNum - 1];
 
   return (
-    <div style={{ backgroundColor: theme.lightMint, minHeight: "100vh", padding: "20px" }}>
-      <div style={{ maxWidth: "500px", margin: "0 auto", backgroundColor: "white", borderRadius: "24px", padding: "30px", minHeight: "400px", position: "relative" }}>
-        <button onClick={() => navigate("/")} style={{ border: "none", background: "none", color: "#999", cursor: "pointer", marginBottom: "20px" }}>← 戻る</button>
-        
-        <div key={step} style={slideInStyle}>
-          <div style={{ textAlign: "center", marginBottom: "30px" }}>
-            <span style={{ fontSize: "50px" }}>🐻‍❄️</span>
-            <p style={{ color: theme.mint, fontWeight: "bold" }}>シロクマ先生の解説</p>
+    <div style={{ backgroundColor: theme.lightMint, minHeight: "100vh" }}>
+      <Header />
+      <StepBar current={stepNum} />
+      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "20px", padding: "25px", boxShadow: "0 5px 15px rgba(0,0,0,0.05)" }}>
+          <h3 style={{ borderLeft: `4px solid ${theme.mint}`, paddingLeft: "10px", marginBottom: "20px" }}>やることリスト</h3>
+          {stepContent.tasks.map((task, i) => (
+            <label key={i} style={{ display: "flex", gap: "10px", padding: "15px", border: "1px solid #eee", borderRadius: "12px", marginBottom: "10px", cursor: "pointer" }}>
+              <input type="checkbox" /> <span style={{ fontSize: "14px" }}>{task}</span>
+            </label>
+          ))}
+          
+          <div style={{ display: "flex", gap: "10px", marginTop: "30px", alignItems: "flex-start" }}>
+            <div style={{ textAlign: "center" }}>
+              <span style={{ fontSize: "30px" }}>🐻‍❄️</span>
+              <div style={{ fontSize: "10px", color: "white", backgroundColor: theme.mint, padding: "2px 4px", borderRadius: "4px" }}>先生</div>
+            </div>
+            <div style={{ flex: 1, backgroundColor: "#e0f2f1", padding: "15px", borderRadius: "0 15px 15px 15px", fontSize: "13px", lineHeight: "1.6", position: "relative" }}>
+              {stepContent.advice}
+            </div>
           </div>
 
-          {typeof step === "number" ? (
-            <>
-              <h2 style={{ fontSize: "20px", textAlign: "center", marginBottom: "40px" }}>{questions[step].q}</h2>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
-                <button onClick={() => handleAnswer(questions[step].yes)} style={diagnosisButtonStyle}>{questions[step].yesLabel || "Yes"}</button>
-                <button onClick={() => handleAnswer(questions[step].no)} style={diagnosisButtonStyle}>{questions[step].noLabel || "No"}</button>
-              </div>
-            </>
-          ) : (
-            <div style={{ textAlign: "center" }}>
-              <h2 style={{ color: theme.mint }}>判定結果：{step === "private" ? "家計簿へ" : "【消耗品費】"}</h2>
-              <p>画像14の仕様に基づき、ここに詳細が表示されます。</p>
-              <button onClick={() => setStep(0)} style={{ marginTop: "20px", padding: "10px", borderRadius: "10px", border: "1px solid #ddd" }}>やり直す</button>
-            </div>
-          )}
+          <button 
+            onClick={() => stepNum < 3 ? navigate(`/step/${stepNum + 1}`) : navigate("/")}
+            style={{ width: "100%", marginTop: "30px", padding: "15px", backgroundColor: "#333", color: "white", border: "none", borderRadius: "10px", fontWeight: "bold", cursor: "pointer" }}
+          >
+            {stepNum < 3 ? "次のStepへ進む" : "トップに戻る"}
+          </button>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
 
-const diagnosisButtonStyle = {
-  padding: "40px 20px",
-  backgroundColor: "white",
-  border: `2px solid #eee`,
-  borderRadius: "16px",
-  fontSize: "16px",
-  fontWeight: "bold" as const,
-  cursor: "pointer",
-  boxShadow: "0 4px 0 #eee",
-};
-
+// --- ルーター ---
 const router = createHashRouter([
   { path: "/", element: <TopPage /> },
-  { path: "/diagnosis", element: <DiagnosisPage /> },
+  { path: "/step/1", element: <StepPage stepNum={1} /> },
+  { path: "/step/2", element: <StepPage stepNum={2} /> },
+  { path: "/step/3", element: <StepPage stepNum={3} /> },
 ]);
 
 const rootElement = document.getElementById("root");
