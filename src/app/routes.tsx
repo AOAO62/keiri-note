@@ -1,14 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { createHashRouter } from "react-router-dom";
 
-export default defineConfig({
-  // ↓ ここが GitHub のリポジトリ名と完全に一致している必要があります
-  base: '/keiri-note/', 
-  plugins: [react()],
-  resolve: {
-    alias: {
-      // appフォルダへのショートカットを作成
-      '@': '/src',
-    },
+// ※ここには、実際に表示させたいコンポーネントをインポートします
+// 例として App を読み込む形にしています。環境に合わせて書き換えてください。
+import App from "../App"; 
+
+export const router = createHashRouter([
+  {
+    path: "/",
+    element: <App />, // ここが最初の画面になります
   },
-})
+  // 他にページ（画面）がある場合は、ここに追加していきます
+]);
