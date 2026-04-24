@@ -28,40 +28,35 @@ const Header = () => (
   </header>
 );
 
-// --- データ: ステップ ---
+// --- データ ---
 const STEPS = [
   { id: 1, title: "準備をしよう", tasks: ["事業用の銀行口座を1つ決める", "クレジットカードを1枚決める"], advice: "口座とカードを分けるだけで、毎月の作業がグッと楽になりますよ！" },
   { id: 2, title: "整理をしよう", tasks: ["財布の中のレシートを分ける", "封筒やファイルに入れる"], advice: "レシートは綺麗に貼らなくても大丈夫。月ごとにまとめておくだけでOKです！" },
-  { id: 3, title: "分類をしよう", tasks: ["経費になるものを確認", "「何代」なのか大まかに分類する"], advice: "「これって経費？」と迷ったら、診断機能を使ってみてくださいね。" },
-  { id: 4, title: "入力をしよう", tasks: ["会計ソフトを開く", "売上と経費を入力する"], advice: "毎日やらなくて大丈夫！月1回、コーヒーを片手に一気にやっちゃいましょう。" },
-  { id: 5, title: "完了！", tasks: ["残高が合っているか確認する", "レシートを保管ボックスへ"], advice: "数字のズレがなければ今月は完了！自分にご褒美をあげましょう🍰" },
+  { id: 3, title: "分類をしよう", tasks: ["経費になるものを確認", "「何代」なのか大まかに分類する"], advice: "迷ったら「診断機能」を使ってみてくださいね。" },
+  { id: 4, title: "入力をしよう", tasks: ["会計ソフトを開く", "売上と経費を入力する"], advice: "月1回、コーヒーを片手に一気に入力しちゃいましょう。" },
+  { id: 5, title: "完了！", tasks: ["残高が合っているか確認する", "レシートを保管ボックスへ"], advice: "今月もお疲れ様でした！自分にご褒美をあげましょう🍰" },
 ];
 
 // --- ページ1: トップページ ---
 const TopPage = () => {
   const [progress, setProgress] = useState(getSavedProgress());
-  const [luckyMsg, setLuckyMsg] = useState("");
+  const [luckyMsg, setLuckyMsg] = useState("コーヒーを淹れて始めましょう。");
 
-  // 格言リスト（画像32の空スペース用）
   const messages = [
     "経理を制する者は、ビジネスを制する！",
     "完璧じゃなくていい、『だいたい』で一歩前へ。",
     "レシートの山は、あなたが頑張った証拠ですよ。",
     "数字は嘘をつかない。あなたの努力も裏切らない。",
-    "コーヒーを淹れて、自分を褒めながら始めましょう。",
+    "シロクマ先生は、いつでもあなたの味方です。",
   ];
 
   useEffect(() => {
-    // ページ読み込み時にランダムでメッセージを選択
     setLuckyMsg(messages[Math.floor(Math.random() * messages.length)]);
   }, []);
 
   const totalTasks = STEPS.reduce((acc, step) => acc + step.tasks.length, 0);
   const completedTasksCount = Object.values(progress).filter(val => val === true).length;
-  
-  const completedStepsCount = STEPS.filter(step => 
-    step.tasks.every(task => progress[`${step.id}-${task}`])
-  ).length;
+  const completedStepsCount = STEPS.filter(step => step.tasks.every(t => progress[`${step.id}-${t}`])).length;
 
   const getTitle = () => {
     if (completedStepsCount === 5) return "経理の達人 🏆";
@@ -74,10 +69,10 @@ const TopPage = () => {
       <Header />
       <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
         
-        {/* 画像32：シロクマ格言（一言占い） */}
+        {/* 格言占い */}
         <div style={{ textAlign: "center", padding: "15px", border: `2px solid ${theme.lightMint}`, borderRadius: "15px", marginBottom: "20px", backgroundColor: "#fdfdfd" }}>
           <span style={{ fontSize: "11px", color: theme.mint, fontWeight: "bold", display: "block", marginBottom: "4px" }}>SHIROKUMA COLUMN</span>
-          <strong style={{ fontSize: "15px", color: theme.text }}>「{luckyMsg}」</strong>
+          <strong style={{ fontSize: "15px" }}>「{luckyMsg}」</strong>
         </div>
 
         <div style={{ textAlign: "center", marginBottom: "15px" }}>
@@ -86,9 +81,14 @@ const TopPage = () => {
           </span>
         </div>
 
-        {/* メイン画像（リンク切れ対策版） */}
-        <div style={{ width: "100%", borderRadius: "20px", overflow: "hidden", marginBottom: "20px", boxShadow: "0 10px 20px rgba(0,0,0,0.05)" }}>
-          <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=80" alt="coffee" style={{ width: "100%", height: "200px", objectFit: "cover", display: "block" }} />
+        {/* メイン画像（読み込めない時の背景色を設定） */}
+        <div style={{ width: "100%", height: "200px", borderRadius: "20px", overflow: "hidden", marginBottom: "20px", boxShadow: "0 10px 20px rgba(0,0,0,0.05)", backgroundColor: theme.lightMint }}>
+          <img 
+            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600" 
+            alt="coffee" 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            onError={(e) => { (e.target as any).style.display = 'none'; }}
+          />
         </div>
 
         {/* コーヒーカウンター */}
@@ -107,12 +107,11 @@ const TopPage = () => {
           <Link to="/step/1" style={mainButtonStyle("#333")}>Step 1 からはじめる →</Link>
         </div>
 
-        {/* Step別アドバイス一覧 */}
-        <section style={{ marginBottom: "40px" }}>
+        <section>
           <h3 style={{ fontSize: "18px", marginBottom: "15px", borderLeft: `4px solid ${theme.mint}`, paddingLeft: "10px" }}>Step別アドバイス</h3>
           <div style={{ display: "grid", gap: "12px" }}>
             {STEPS.map((s) => {
-              const isStepDone = s.tasks.every(task => progress[`${s.id}-${task}`]);
+              const isStepDone = s.tasks.every(t => progress[`${s.id}-${t}`]);
               return (
                 <Link key={s.id} to={`/step/${s.id}`} style={{ textDecoration: "none", color: "inherit" }}>
                   <div style={{ display: "flex", gap: "15px", padding: "15px", backgroundColor: isStepDone ? "#f0fdfa" : "#fafafa", borderRadius: "12px", border: `1px solid ${isStepDone ? theme.mint : theme.border}` }}>
@@ -121,7 +120,7 @@ const TopPage = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: "bold", fontSize: "14px" }}>{s.title}</div>
-                      <p style={{ fontSize: "12px", color: "#666", margin: 0, lineHeight: "1.4" }}>{s.advice}</p>
+                      <p style={{ fontSize: "12px", color: "#666", margin: 0 }}>{s.advice}</p>
                     </div>
                   </div>
                 </Link>
@@ -129,8 +128,8 @@ const TopPage = () => {
             })}
           </div>
         </section>
-
-        <Link to="/qa" style={{ display: "block", textAlign: "center", color: "#888", fontSize: "14px", textDecoration: "none", padding: "15px", border: `1px solid ${theme.border}`, borderRadius: "12px" }}>
+        
+        <Link to="/qa" style={{ display: "block", textAlign: "center", marginTop: "30px", color: "#888", textDecoration: "none", fontSize: "14px" }}>
           🤔 よくある質問（Q&A）はこちら
         </Link>
       </main>
@@ -138,7 +137,7 @@ const TopPage = () => {
   );
 };
 
-// --- ページ2: ステップ詳細（チェック連動ロジック） ---
+// --- StepPage (保存ロジック含む) ---
 const StepPage = () => {
   const { id } = useParams();
   const num = parseInt(id || "1");
@@ -159,62 +158,46 @@ const StepPage = () => {
       <Header />
       <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ backgroundColor: "white", borderRadius: "20px", padding: "25px", boxShadow: "0 5px 15px rgba(0,0,0,0.05)" }}>
-          <div style={{ color: theme.mint, fontWeight: "bold", marginBottom: "5px" }}>Step {num} / 5</div>
-          <h2 style={{ marginBottom: "20px", fontSize: "20px" }}>{content.title}</h2>
+          <h2 style={{ marginBottom: "20px", fontSize: "20px" }}>Step {num}: {content.title}</h2>
           {content.tasks.map((t, i) => (
             <label key={i} style={{ display: "flex", gap: "12px", padding: "15px", border: `1px solid ${theme.border}`, borderRadius: "12px", marginBottom: "10px", cursor: "pointer", alignItems: "center" }}>
-              <input 
-                type="checkbox" 
-                checked={!!progress[`${num}-${t}`]} 
-                onChange={() => handleCheck(t)} 
-                style={{ width: "18px", height: "18px" }}
-              /> 
+              <input type="checkbox" checked={!!progress[`${num}-${t}`]} onChange={() => handleCheck(t)} style={{ width: "18px", height: "18px" }} />
               <span style={{ fontSize: "14px", textDecoration: progress[`${num}-${t}`] ? "line-through" : "none", color: progress[`${num}-${t}`] ? "#ccc" : "inherit" }}>{t}</span>
             </label>
           ))}
           <div style={{ display: "flex", gap: "10px", marginTop: "30px", backgroundColor: "#f0fdfa", padding: "15px", borderRadius: "12px" }}>
              <span style={{ fontSize: "24px" }}>🐻‍❄️</span><p style={{ fontSize: "13px", margin: 0, lineHeight: "1.5" }}>{content.advice}</p>
           </div>
-          <div style={{ marginTop: "30px" }}>
-            {num < 5 ? <Link to={`/step/${num + 1}`} style={mainButtonStyle("#333")}>次のStepへ進む</Link> : <Link to="/" style={mainButtonStyle(theme.mint)}>完了！トップへ戻る</Link>}
-          </div>
+          <Link to="/" style={{ ...mainButtonStyle(theme.mint), marginTop: "30px" }}>トップに戻って確認</Link>
         </div>
       </main>
     </div>
   );
 };
 
-// --- 他の機能（診断・Q&A） ---
+// --- その他のコンポーネント ---
 const mainButtonStyle = (bg: string) => ({
   display: "block", textAlign: "center" as const, textDecoration: "none", padding: "20px", 
-  backgroundColor: bg, color: "white", borderRadius: "15px", fontWeight: "bold" as const,
-  boxShadow: "0 4px 0 rgba(0,0,0,0.1)"
+  backgroundColor: bg, color: "white", borderRadius: "15px", fontWeight: "bold" as const
 });
 
-// Q&Aコンポーネント
-const QAPage = () => {
-  const qas = [
-    { q: "領収書をなくした時は？", a: "再発行できない場合は「出金伝票」を書きましょう。" },
-    { q: "家賃の按分はどうする？", a: "仕事で使っているスペースの面積などで計算します。" }
-  ];
-  return (
-    <div style={{ backgroundColor: theme.lightMint, minHeight: "100vh" }}>
-      <Header />
-      <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>よくある質問</h2>
-        {qas.map((item, i) => (
-          <details key={i} style={{ backgroundColor: "white", borderRadius: "12px", marginBottom: "10px", padding: "15px" }}>
-            <summary style={{ fontWeight: "bold", cursor: "pointer" }}>Q. {item.q}</summary>
-            <p style={{ marginTop: "10px", fontSize: "14px", color: "#555" }}>🐻‍❄️ {item.a}</p>
-          </details>
-        ))}
-        <Link to="/" style={{ display: "block", textAlign: "center", marginTop: "30px", color: theme.mint }}>戻る</Link>
-      </main>
-    </div>
-  );
-};
-
-// 診断コンポーネント（簡易版）
 const Diagnosis = () => (
-  <div style={{ padding: "50px", textAlign: "center" }}>
-    <h2>これ
+  <div style={{ padding: "50px", textAlign: "center" }}><h2>診断機能 🐻‍❄️</h2><Link to="/">戻る</Link></div>
+);
+
+const QAPage = () => (
+  <div style={{ padding: "50px", textAlign: "center" }}><h2>Q&A 🤔</h2><Link to="/">戻る</Link></div>
+);
+
+const router = createHashRouter([
+  { path: "/", element: <TopPage /> },
+  { path: "/step/:id", element: <StepPage /> },
+  { path: "/diagnosis", element: <Diagnosis /> },
+  { path: "/qa", element: <QAPage /> },
+  { path: "*", element: <Navigate to="/" /> },
+]);
+
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
+}
